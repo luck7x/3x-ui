@@ -8,6 +8,9 @@ plain='\033[0m'
 
 cur_dir=$(pwd)
 
+# GitHub Token (为了避免泄露Token，建议直接在命令行中设置)
+export GITHUB_TOKEN="123456789"
+
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
 
@@ -142,7 +145,7 @@ install_x-ui() {
     cd /usr/local/
 
     if [ $# == 0 ]; then
-        tag_version=$(curl -Ls "https://api.github.com/repos/MHSanaei/3x-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        tag_version=$(curl -Ls -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/MHSanaei/3x-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$tag_version" ]]; then
             echo -e "${red}Failed to fetch x-ui version, it may be due to GitHub API restrictions, please try it later${plain}"
             exit 1
